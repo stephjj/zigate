@@ -3,6 +3,7 @@ import { StatusPayload, ZGStatusMessage } from './messages/status'
 import { DeviceAnnouncePayload, ZGDeviceAnnounceMessage } from './messages/device-announce'
 import { ActiveEndpointPayload, ZGActiveEndpointMessage } from './messages/active-endpoint'
 import { GetDevicesListPayload, ZGGetDevicesListMessage } from './messages/get-devices-list'
+import { IASStatusChangeNotificationPayload, ZGIASStatusChangeNotificationMessage } from './messages/IAS-status-change-notification'
 import debug from './debug'
 
 export interface ZGMessage {
@@ -16,7 +17,8 @@ export enum ZGMessageCode {
   Status = 0x8000,
   DeviceAnnounce = 0x004d,
   ActiveEndpoint = 0x0045,
-  GetDevicesList = 0x8015
+  GetDevicesList = 0x8015,
+  IASStatusChangeNotification = 0x8401
 }
 
 export type ZGMessagePayload =
@@ -25,6 +27,7 @@ export type ZGMessagePayload =
   | DeviceAnnouncePayload
   | ActiveEndpointPayload
   | GetDevicesListPayload
+  | IASStatusChangeNotificationPayload
 
 export function createZGMessage(code: ZGMessageCode, payload: Buffer): ZGMessage {
   debug(`message`)(`new from code: %d`, code)
@@ -39,6 +42,8 @@ export function createZGMessage(code: ZGMessageCode, payload: Buffer): ZGMessage
       return new ZGActiveEndpointMessage(code, payload)
     case ZGMessageCode.GetDevicesList:
       return new ZGGetDevicesListMessage(code, payload)
+    case ZGMessageCode.IASStatusChangeNotification:
+      return new ZGIASStatusChangeNotificationMessage(code, payload)
     default:
       throw new Error(`Unsupported message code : ${code}`)
   }
